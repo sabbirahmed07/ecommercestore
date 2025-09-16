@@ -1,4 +1,4 @@
-import { Product } from '../../../../types';
+import { Product } from '../../../types';
 import ProductCard from './product-card';
 
 const ProductList = ({
