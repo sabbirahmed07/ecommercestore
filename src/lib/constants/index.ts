@@ -10,9 +10,16 @@ export const SERVER_URL =
 export const LATEST_PRODUCTS_LIMIT =
   Number(process.env.NEXT_PUBLIC_LATEST_PRODUCT_LIMIT) || 4;
 
+export const PAYMENT_METHODS = process.env.PAYMENT_METHODS
+  ? process.env.PAYMENT_METHODS.split(', ')
+  : ['PayPal', 'Stripe', 'CashOnDelivery'];
+export const DEFAULT_PAYMENT_METHOD = process.env.DEFAULT_PAYMENT_METHOD
+  ? process.env.DEFAULT_PAYMENT_METHOD
+  : 'PayPal';
+
 export const signInDefaultValues = {
-  email: '',
-  password: '',
+  email: 'sabbirsristy@gmail.com  ',
+  password: '123456',
 };
 
 export const signUpDefaultValues = {
