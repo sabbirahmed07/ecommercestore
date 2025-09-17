@@ -13,7 +13,7 @@ import CredentialsSignInForm from '@/components/shared/sign-in/credentials.form'
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
-export const metaData: Metadata = {
+export const metadata: Metadata = {
   title: 'Sign In',
 };
 

@@ -13,7 +13,7 @@ import SignUpForm from '@/components/shared/sign-in/signup.form';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
-export const metaData: Metadata = {
+export const metadata: Metadata = {
   title: 'Sign Up',
 };
 
