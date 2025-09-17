@@ -1,6 +1,6 @@
 'use client';
 import { formatCurrency } from '@/lib/utils';
-import { Cart } from '@/types';
+import PaymentOrder from './payment-order';
 
 type Props = {
   itemsPrice: string;

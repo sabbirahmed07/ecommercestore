@@ -5,6 +5,7 @@ import { formatDateTime, formatId } from '@/lib/utils';
 import { Order } from '@/types';
 import PlaceOrderTable from './place-order-table';
 import OrderDetailsTotal from './order-details-total';
+import PaymentOrder from './payment-order';
 
 const OrderDetailstable = ({ order }: { order: Order }) => {
   const {
@@ -50,7 +51,7 @@ const OrderDetailstable = ({ order }: { order: Order }) => {
               </p>
               {isDelivered ? (
                 <Badge variant={'secondary'}>
-                  Delivered at {formatDateTime(paidAt!).dateTime}
+                  Delivered at {formatDateTime(deliveredAt!).dateTime}
                 </Badge>
               ) : (
                 <Badge variant={'destructive'}>Not Delivered</Badge>
@@ -73,6 +74,12 @@ const OrderDetailstable = ({ order }: { order: Order }) => {
                 shippingPrice={shippingPrice}
                 taxPrice={taxPrice}
                 totalPrice={totalPrice}
+              />
+              <PaymentOrder
+                isPaid={isPaid}
+                orderId={id}
+                paymentMethod='PayPal'
+                paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
               />
             </CardContent>
           </Card>
