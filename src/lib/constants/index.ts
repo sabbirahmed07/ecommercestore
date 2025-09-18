@@ -20,8 +20,8 @@ export const DEFAULT_PAYMENT_METHOD = process.env.DEFAULT_PAYMENT_METHOD
 export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 2;
 
 export const signInDefaultValues = {
-  email: 'sabbirsristy@gmail.com  ',
-  password: '123456',
+  email: '',
+  password: '',
 };
 
 export const signUpDefaultValues = {
@@ -32,11 +32,11 @@ export const signUpDefaultValues = {
 };
 
 export const shippingAddressDefaultValues: ShippingAddress = {
-  fullName: 'Sabbir',
-  city: 'Tangail',
-  country: 'Bangladesh',
-  postalCode: '1900',
-  streetAddress: 'Choto Kali Bari Tangail',
+  fullName: '',
+  city: '',
+  country: '',
+  postalCode: '',
+  streetAddress: '',
 };
 
 export const productDefaultValues = {
