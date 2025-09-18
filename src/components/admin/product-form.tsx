@@ -6,7 +6,7 @@ import { insertProductSchema, updateProductSchema } from '@/lib/validator';
 import { Product } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { ControllerRenderProps, SubmitHandler, useForm } from 'react-hook-form';
+import { ControllerRenderProps, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
   Form,
@@ -37,18 +37,19 @@ const ProductForm = ({
 }) => {
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof insertProductSchema>>({
-    resolver:
-      type === 'Update'
-        ? zodResolver(updateProductSchema)
-        : zodResolver(insertProductSchema),
+  const schema = type === 'Update' ? updateProductSchema : insertProductSchema;
+
+  type FormValues = z.infer<typeof schema>;
+
+  const form = useForm<FormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(schema) as any,
     defaultValues:
       product && type === 'Update' ? product : productDefaultValues,
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof insertProductSchema>> = async (
-    values
-  ) => {
+  const onSubmit = async () => {
+    const values = form.getValues();
     // On Create
     if (type === 'Create') {
       const res = await createProduct(values);

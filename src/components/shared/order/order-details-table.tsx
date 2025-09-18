@@ -14,7 +14,7 @@ const OrderDetailstable = ({
   order,
   isAdmin,
 }: {
-  order: Order;
+  order: Omit<Order, 'paymentResult'>;
   isAdmin: boolean;
 }) => {
   const {
