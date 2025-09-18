@@ -9,13 +9,16 @@ import PlaceOrderTable from './place-order-table';
 import OrderDetailsTotal from './order-details-total';
 import PaymentOrder from './payments/payment-paypal-order';
 import CodPaymentOrder from './payments/payment-cod-order';
+import StripePaymentOrder from './payments/stripe-payment';
 
 const OrderDetailstable = ({
   order,
   isAdmin,
+  stripeClient_secret,
 }: {
   order: Omit<Order, 'paymentResult'>;
   isAdmin: boolean;
+  stripeClient_secret: string | null;
 }) => {
   const {
     shippingAddress,
@@ -88,6 +91,14 @@ const OrderDetailstable = ({
                 <PaymentOrder
                   orderId={id}
                   paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
+                />
+              )}
+
+              {!isPaid && paymentMethod === 'Stripe' && stripeClient_secret && (
+                <StripePaymentOrder
+                  priceInCents={Number(order.totalPrice) * 100}
+                  orderId={order.id}
+                  clientSecret={stripeClient_secret}
                 />
               )}
 
