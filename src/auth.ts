@@ -1,66 +1,70 @@
-import type { NextAuthConfig } from 'next-auth';
 import NextAuth from 'next-auth';
+import { authConfig } from './auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/db/prisma';
-import CredentialProviders from 'next-auth/providers/credentials';
-import { compareSync } from 'bcrypt-ts-edge';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { compare } from '@/lib/encrypt';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
-export const config = {
+export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
     signIn: '/sign-in',
     error: '/sign-in',
   },
   session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 69 * 60, // 30 days
+    strategy: 'jwt' as const,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    CredentialProviders({
+    CredentialsProvider({
       credentials: {
         email: { type: 'email' },
         password: { type: 'password' },
       },
       async authorize(credentials) {
         if (credentials == null) return null;
-        //find a user
+
+        // Find user in database
         const user = await prisma.user.findFirst({
-          where: { email: credentials.email as string },
+          where: {
+            email: credentials.email as string,
+          },
         });
 
+        // Check if user exists and if the password matches
         if (user && user.password) {
-          const isMatch = compareSync(
+          const isMatch = await compare(
             credentials.password as string,
             user.password
           );
 
-          //correct passowrd?
+          // If password is correct, return user
           if (isMatch) {
             return {
               id: user.id,
-              email: user.email,
               name: user.name,
+              email: user.email,
               role: user.role,
             };
           }
         }
-        //if not matched
+        // If user does not exist or password does not match return null
         return null;
       },
     }),
   ],
-
   callbacks: {
+    ...authConfig.callbacks,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, user, trigger, token }: any) {
+      // Set the user ID from the token
       session.user.id = token.sub;
       session.user.role = token.role;
       session.user.name = token.name;
 
-      //if there is an update, set the user name
-      if (trigger === 'updated') {
+      // If there is an update, set the user name
+      if (trigger === 'update') {
         session.user.name = user.name;
       }
 
@@ -68,16 +72,16 @@ export const config = {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, user, trigger, session }: any) {
-      //assign user fields to the token
+      // Assign user fields to token
       if (user) {
         token.id = user.id;
         token.role = user.role;
 
-        //if user has no name
+        // If user has no name then use the email
         if (user.name === 'NO_NAME') {
-          token.name = user.email.split('@')[0];
+          token.name = user.email!.split('@')[0];
 
-          //update the database to reflect the token name
+          // Update database to reflect the token name
           await prisma.user.update({
             where: { id: user.id },
             data: { name: token.name },
@@ -94,12 +98,12 @@ export const config = {
             });
 
             if (sessionCart) {
-              //delete current user cart
+              // Delete current user cart
               await prisma.cart.deleteMany({
                 where: { userId: user.id },
               });
 
-              //assign new cart
+              // Assign new cart
               await prisma.cart.update({
                 where: { id: sessionCart.id },
                 data: { userId: user.id },
@@ -109,54 +113,12 @@ export const config = {
         }
       }
 
-      //handle session updates
+      // Handle session updates
       if (session?.user.name && trigger === 'update') {
         token.name = session.user.name;
       }
+
       return token;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    authorized({ request, auth }: any) {
-      // array of regex patterns of paths we want to protect
-      const protectedPaths = [
-        /\/shipping-address/,
-        /\/payment-method/,
-        /\/place-order/,
-        /\/profile/,
-        /\/admin/,
-        /\/user\/(.*)/,
-        /\/order\/(.*)/,
-      ];
-      //get path name from request object
-      const { pathname } = request.nextUrl;
-
-      //check if user is not authenticated and accessing a protected route
-      if (!auth && protectedPaths.some((p) => p.test(pathname))) return false;
-
-      //check for session cart cookie
-      if (!request.cookies.get('sessionCartId')) {
-        //generate session cart id
-        const sessionCartId = crypto.randomUUID();
-
-        //clone req headers
-        const newRequestHeader = new Headers(request.headers);
-
-        //create new response and add the new headers;
-        const response = NextResponse.next({
-          request: {
-            headers: newRequestHeader,
-          },
-        });
-
-        //set newly generated sessioncartid in the response cookies
-        response.cookies.set('sessionCartId', sessionCartId);
-
-        return response;
-      } else {
-        return true;
-      }
-    },
   },
-} satisfies NextAuthConfig;
-
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+});
