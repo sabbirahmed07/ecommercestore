@@ -1,13 +1,22 @@
 'use client';
+
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+
 import { formatDateTime, formatId } from '@/lib/utils';
 import { Order } from '@/types';
 import PlaceOrderTable from './place-order-table';
 import OrderDetailsTotal from './order-details-total';
-import PaymentOrder from './payment-order';
+import PaymentOrder from './payments/payment-paypal-order';
+import CodPaymentOrder from './payments/payment-cod-order';
 
-const OrderDetailstable = ({ order }: { order: Order }) => {
+const OrderDetailstable = ({
+  order,
+  isAdmin,
+}: {
+  order: Order;
+  isAdmin: boolean;
+}) => {
   const {
     shippingAddress,
     orderItems,
@@ -75,12 +84,20 @@ const OrderDetailstable = ({ order }: { order: Order }) => {
                 taxPrice={taxPrice}
                 totalPrice={totalPrice}
               />
-              <PaymentOrder
-                isPaid={isPaid}
-                orderId={id}
-                paymentMethod='PayPal'
-                paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
-              />
+              {isPaid && paymentMethod === 'PayPal' && (
+                <PaymentOrder
+                  orderId={id}
+                  paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
+                />
+              )}
+
+              {isAdmin && paymentMethod === 'CashOnDelivery' && (
+                <CodPaymentOrder
+                  orderId={id}
+                  isDelivered={isDelivered}
+                  isPaid={isPaid}
+                />
+              )}
             </CardContent>
           </Card>
         </div>

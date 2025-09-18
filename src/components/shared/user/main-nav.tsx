@@ -4,21 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
-const links = [
-  {
-    title: 'Profile',
-    href: '/user/profile',
-  },
-  {
-    title: 'Order',
-    href: '/user/orders',
-  },
-];
+type NavLink = {
+  title: string;
+  href: string;
+};
 
-const MainUserNav = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) => {
+interface MainNavProps extends React.HTMLAttributes<HTMLElement> {
+  links: NavLink[];
+}
+
+const MainNav: React.FC<MainNavProps> = ({ links, className, ...props }) => {
   const pathname = usePathname();
   return (
     <nav
@@ -41,4 +36,4 @@ const MainUserNav = ({
   );
 };
 
-export default MainUserNav;
+export default MainNav;

@@ -10,14 +10,11 @@ import {
 import { toast } from 'sonner';
 
 type Props = {
-  isPaid: boolean;
-  paymentMethod: 'PayPal' | 'Stripe' | 'CashOnDelivery';
   paypalClientId?: string;
-  stripeClientId?: string;
   orderId: string;
 };
 
-const PaymentOrder = (props: Props) => {
+const PaypalPaymentOrder = (props: Props) => {
   const PrintLoadingState = () => {
     const [{ isPending, isRejected }] = usePayPalScriptReducer();
     let status = '';
@@ -48,19 +45,17 @@ const PaymentOrder = (props: Props) => {
 
   return (
     <>
-      {!props.isPaid && props.paymentMethod === 'PayPal' && (
-        <div>
-          <PayPalScriptProvider options={{ clientId: props.paypalClientId! }}>
-            <PrintLoadingState />
-            <PayPalButtons
-              createOrder={handleCreatePayPalOrder}
-              onApprove={handleApprovePayPalOrder}
-            />
-          </PayPalScriptProvider>
-        </div>
-      )}
+      <div>
+        <PayPalScriptProvider options={{ clientId: props.paypalClientId! }}>
+          <PrintLoadingState />
+          <PayPalButtons
+            createOrder={handleCreatePayPalOrder}
+            onApprove={handleApprovePayPalOrder}
+          />
+        </PayPalScriptProvider>
+      </div>
     </>
   );
 };
 
-export default PaymentOrder;
+export default PaypalPaymentOrder;

@@ -2,20 +2,29 @@ import { APP_NAME } from '@/lib/constants';
 import Image from 'next/image';
 import Menu from '@/components/shared/header/menu';
 import Link from 'next/link';
-import MainUserNav from '@/components/shared/user/main-nav';
+import MainAdminNav from '@/components/shared/user/main-nav';
+import { Input } from '@/components/ui/input';
 
-const userLinks = [
+const adminLinks = [
   {
-    title: 'Profile',
-    href: '/user/profile',
+    title: 'Overview',
+    href: '/admin/overview',
   },
   {
-    title: 'Order',
-    href: '/user/orders',
+    title: 'Products',
+    href: '/admin/products',
+  },
+  {
+    title: 'Orders',
+    href: '/admin/orders',
+  },
+  {
+    title: 'Users',
+    href: '/admin/users',
   },
 ];
 
-export default function UserLayout({
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -33,8 +42,15 @@ export default function UserLayout({
                 alt={APP_NAME}
               />
             </Link>
-            <MainUserNav className='mx-6' links={userLinks} />
+            <MainAdminNav className='mx-6' links={adminLinks} />
             <div className='ml-auto items-center flex space-x-4'>
+              <div>
+                <Input
+                  type='search'
+                  placeholder='Search...'
+                  className='md:w-[100px] lg:w-[300px]'
+                />
+              </div>
               <Menu />
             </div>
           </div>
