@@ -1,5 +1,6 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-The project url is at: [https://ecommercestore-eta-one.vercel.app/](url)
+
+The project live url is at: [https://ecommercestore-eta-one.vercel.app/](url)
 
 ## Getting Started
 
