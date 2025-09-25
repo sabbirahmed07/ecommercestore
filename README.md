@@ -1,6 +1,9 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`]
 The project live url is at: [https://ecommercestore-eta-one.vercel.app/](url)
+
+(https://nextjs.org/docs/app/api-re<img width="1902" height="877" alt="Screenshot 2025-09-25 131436" src="https://github.com/user-attachments/assets/2e35c37d-5ab2-4531-a56a-292d7da9133a" />
+ference/cli/create-next-app).
+
 
 ## Getting Started
 
